@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>São Serapião | A Forja da Fé</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        aura: {
+                            main: '#FFFFFF',
+                            sec: '#F8F9FA',
+                            text: '#111827',
+                            muted: '#6B7280',
+                            border: '#E5E7EB',
+                            primary: '#3B82F6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Design System Pro Styles -->
+    <style>
+        :root {
+            --bg-main: #FFFFFF;
+            --text-main: #111827;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #111827; border-radius: 4px; }
+
+        /* Core Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Text Masking Reveal */
+        .text-reveal-wrapper {
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: bottom;
+        }
+        .text-reveal-content {
+            transform: translateY(110%);
+            opacity: 0;
+            display: block;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
+        }
+        .reveal-active .text-reveal-content, .active .text-reveal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Delays */
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+        .delay-500 { transition-delay: 0.5s; }
+
+        /* Glass Panel */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Beam Button Effect */
+        @keyframes shimmer {
+            from { transform: translateX(-100%) skewX(-15deg); }
+            to { transform: translateX(200%) skewX(-15deg); }
+        }
+        .beam-button {
+            position: relative;
+            overflow: hidden;
+        }
+        .beam-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .beam-button:hover::before {
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Specs specific tags */
+        .spec-label { @apply text-[10px] font-mono text-aura-muted uppercase tracking-widest block mb-2; }
+
+        /* Video Setup */
+        #hero-video {
+            will-change: transform;
+            /* Ensures smoother rendering on Safari/iOS */
+            -webkit-transform: translateZ(0); 
+        }
+
+        /* Responsive Mobile Video Fallback */
+        .mobile-video-bg {
+            display: none;
+        }
+        @media (max-width: 1023px) {
+            .mobile-video-bg {
+                display: block;
+                position: fixed;
+                inset: 0;
+                z-index: -1;
+                opacity: 0.15;
+            }
+        }
+    </style>
+</head>
+
+<body class="selection:bg-aura-text selection:text-white">
+
+    <!-- Mobile Background Video (Visible only on small screens) -->
+    <video class="mobile-video-bg w-full h-full object-cover" src="assets/raw_files/SSerapiao.mp4" playsinline muted autoplay loop></video>
+
+    <!-- Navbar Minimalista -->
+    <header class="fixed top-0 w-full z-50 glass-panel border-b border-aura-border reveal active">
+        <div class="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <iconify-icon icon="solar:cross-bold-duotone" class="text-2xl text-aura-text"></iconify-icon>
+                <span class="font-display font-bold tracking-widest text-sm uppercase">Ordem Mercedária</span>
+            </div>
+            <button class="beam-button bg-aura-text text-white px-5 py-2 rounded-full text-xs font-mono tracking-widest uppercase hover:bg-gray-800 transition-colors">
+                Adquirir
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Hero Container (Tall section for scrolling) -->
+    <!-- The height ensures we have enough scroll space for the video to play through -->
+    <section id="hero-container" class="relative w-full bg-white lg:bg-transparent">
+        <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 relative">
+            
+            <!-- LEFT COLUMN: Scrolling Content -->
+            <div class="col-span-1 lg:col-span-6 px-6 lg:px-16 pt-[20vh] pb-[20vh] z-10">
+                
+                <!-- Block 1: Introduction -->
+                <div class="h-[80vh] flex flex-col justify-center reveal">
+                    <span class="spec-label">A Forja da Fé</span>
+                    <h1 class="font-display text-6xl md:text-8xl font-bold tracking-tighter mb-8 leading-[0.9]">
+                        <span class="text-reveal-wrapper block"><span class="text-reveal-content">SÃO</span></span>
+                        <span class="text-reveal-wrapper block"><span class="text-reveal-content delay-200">SERAPIÃO</span></span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-aura-muted max-w-lg mb-10 leading-relaxed font-light reveal delay-300">
+                        Um espírito forjado no sofrimento, inquebrável diante do mal. Conheça a história do mártir que entregou sua própria vida para resgatar os cativos.
+                    </p>
+                    <div class="flex gap-4 reveal delay-500">
+                        <button class="group beam-button px-8 py-4 bg-aura-text text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-gray-900/20">
+                            <span>Adquirir o Terço</span>
+                            <iconify-icon icon="solar:arrow-right-linear" class="text-xl group-hover:translate-x-1 transition-transform"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Block 2: The Martyrdom -->
+                <div class="h-[100vh] flex flex-col justify-center reveal">
+                    <span class="spec-label">O Sacrifício</span>
+                    <h2 class="font-display text-5xl md:text-6xl font-bold mb-8 tracking-tight">O Martírio Supremo</h2>
+                    <p class="text-lg md:text-xl text-aura-muted max-w-lg leading-relaxed mb-6">
+                        Pregado em uma cruz em forma de X, Serapião foi brutalmente torturado por fanáticos do Islã. Seus membros foram dilacerados e suas articulações quebradas.
+                    </p>
+                    <p class="text-lg md:text-xl text-aura-text font-medium max-w-lg leading-relaxed border-l-2 border-aura-text pl-6 py-2">
+                        Mas sua fé em Jesus Cristo permaneceu inabalável até o último suspiro. Ele não cedeu. Ele não negou sua cruz.
+                    </p>
+                </div>
+
+                <!-- Block 3: The Rosary -->
+                <div class="h-[100vh] flex flex-col justify-center reveal">
+                    <span class="spec-label">A Ferramenta</span>
+                    <h2 class="font-display text-5xl md:text-6xl font-bold mb-8 tracking-tight">A Arma do Cristão</h2>
+                    <p class="text-lg md:text-xl text-aura-muted max-w-lg leading-relaxed mb-10">
+                        Este terço não é apenas uma devoção; é um escudo espiritual forjado com a mesma resiliência de São Serapião. Feito com pedras pesadas, correntes robustas e a cruz do martírio, preparado para as horas de maior provação.
+                    </p>
+                    <div class="glass-panel p-6 rounded-2xl w-fit">
+                        <div class="grid grid-cols-2 gap-8 text-left">
+                            <div>
+                                <span class="spec-label">Material</span>
+                                <span class="font-medium text-aura-text text-sm">Pedras Hematita (Armadura)</span>
+                            </div>
+                            <div>
+                                <span class="spec-label">Resistência</span>
+                                <span class="font-medium text-aura-text text-sm">Paracord Militar</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Sticky Pinned Video (Visible only on Desktop/Tablet) -->
+            <div class="hidden lg:block lg:col-span-6 sticky top-0 h-screen">
+                <div class="absolute inset-0 p-8 py-24 flex flex-col justify-center">
+                    
+                    <!-- Apple-style Video Container -->
+                    <div class="relative w-full h-[80vh] rounded-2xl overflow-hidden glass-panel shadow-2xl bg-black">
+                        <!-- Video Controlled by Scroll -->
+                        <video id="hero-video" class="w-full h-full object-cover opacity-90" src="assets/raw_files/SSerapiao.mp4" playsinline muted preload="auto"></video>
+                        
+                        <!-- Internal Gradient Overlay for Text Contrast matching the design system -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+                        <div class="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-black/20 pointer-events-none"></div>
+                    </div>
+
+                    <!-- Metadata / Scroll Indicator -->
+                    <div class="absolute bottom-12 right-12 flex items-center gap-4 text-aura-muted opacity-60">
+                        <span class="text-[10px] font-mono uppercase tracking-widest">Scroll para explorar</span>
+                        <div class="w-12 h-[1px] bg-aura-muted"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Additional Footer Space to finish scrolling out nicely -->
+    <footer class="h-[50vh] bg-aura-text text-white flex flex-col items-center justify-center border-t border-aura-border relative overflow-hidden">
+        <iconify-icon icon="solar:cross-bold-duotone" class="text-5xl text-gray-600 mb-6"></iconify-icon>
+        <h3 class="font-display text-3xl font-bold mb-4">Abrace a Cruz</h3>
+        <p class="font-mono text-xs text-gray-400 uppercase tracking-widest">A Ordem Mercedária vive.</p>
+    </footer>
+
+    <!-- GSAP & Animations Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Initial Animation Reveals
+            setTimeout(() => {
+                document.querySelectorAll('.reveal').forEach((el, index) => {
+                    // Force reveal immediately for elements in first viewport
+                    const rect = el.getBoundingClientRect();
+                    if(rect.top < window.innerHeight) {
+                        el.classList.add('active');
+                        const wrappers = el.querySelectorAll('.text-reveal-wrapper');
+                        if (wrappers.length) el.classList.add('reveal-active');
+                    }
+                });
+            }, 100);
+
+            // 2. Intersection Observer for Text Blocks as user scrolls down
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.25
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        const textWrappers = entry.target.querySelectorAll('.text-reveal-wrapper');
+                        if (textWrappers.length > 0) {
+                            entry.target.classList.add('reveal-active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+
+            // 3. GSAP Scroll-Tied Video Logic
+            gsap.registerPlugin(ScrollTrigger);
+
+            const video = document.getElementById('hero-video');
+
+            // Wait until video metadata is loaded to know the duration
+            video.addEventListener('loadedmetadata', () => {
+                
+                // Ensure video is paused
+                video.pause();
+                video.currentTime = 0;
+
+                // Create ScrollTrigger tied to the hero container
+                ScrollTrigger.create({
+                    trigger: '#hero-container',
+                    start: 'top top',
+                    end: 'bottom bottom', // Ends when the scrolling container finishes
+                    scrub: 1.5, // Smoothness level (seconds to catch up)
+                    onUpdate: (self) => {
+                        // self.progress goes from 0 to 1 based on scroll
+                        // Update the video's current time to match the progress
+                        const targetTime = video.duration * self.progress;
+                        
+                        // We use a small optimization to avoid setting the same time repeatedly
+                        if (video.readyState >= 2 && Math.abs(video.currentTime - targetTime) > 0.05) {
+                            video.currentTime = targetTime;
+                        }
+                    }
+                });
+            });
+
+            // Fallback: if loadedmetadata fails or takes too long, attempt to force load
+            video.load();
+        });
+    </script>
+</body>
+</html>
