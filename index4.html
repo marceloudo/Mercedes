@@ -195,8 +195,10 @@
             position: fixed;
             inset: 0;
             z-index: 0;
+            /* manual change according to Adapta expertise */
             opacity: 0.15;
             pointer-events: none;
+            /* Garante que os botões continuem clicáveis */
         }
 
         @media (min-width: 1024px) {
@@ -231,8 +233,7 @@
     </header>
 
     <!-- Main Hero Container -->
-    <!-- BUGFIX: Removed overflow-x-hidden which breaks GSAP ScrollTrigger calculation -->
-    <section id="hero-container" class="relative w-full bg-transparent">
+    <section id="hero-container" class="relative w-full bg-transparent overflow-x-hidden">
         <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 relative">
 
             <!-- LEFT COLUMN: Scrolling Content -->
@@ -433,9 +434,12 @@
                         });
                     };
 
-                    // Reverting exactly to index3.html robust logic for video load
-                    video.addEventListener('loadedmetadata', setupVideo, { once: true });
-                    video.load();
+                    if (video.readyState >= 1) { // HAVE_METADATA
+                        setupVideo();
+                    } else {
+                        video.addEventListener('loadedmetadata', setupVideo, { once: true });
+                        video.load();
+                    }
                 }
 
                 // Cleanup block when resizing below 1024px
@@ -445,10 +449,7 @@
                     revealElements.forEach(el => {
                         el.classList.remove('active', 'reveal-active');
                     });
-                    if (video) {
-                        video.removeEventListener('loadedmetadata', setupVideo);
-                    }
-                    // GSAP automatically cleans up any ScrollTriggers created inside this matchMedia context
+                    // GSAP automatically cleans up any ScrollTriggers created inside this matchMedia context!
                 };
             });
         });
